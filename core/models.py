@@ -39,3 +39,71 @@ class task(models.Model):
 
     def __str__(self):
         return self.name
+
+from django.db import models
+
+class Book(models.Model):
+    title = models.CharField(max_length=100)
+    author = models.CharField(max_length=100)
+    published_date = models.DateField()
+    isbn = models.CharField(max_length=13)
+
+    def __str__(self):
+        return self.title
+
+from django.db import models
+
+class Client(models.Model):
+    client_name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True,null=True,blank=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.client_name
+    
+from django.db import models
+
+class Department(models.Model):
+    department_name = models.CharField(max_length=255)
+    client_id = models.ForeignKey('core.Client',on_delete=models.CASCADE)
+    created_by = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_by = models.CharField(max_length=100,null=True,blank=True,default='No Update Yet')
+    updated_at = models.DateTimeField(auto_now=True,null=True,blank=True)
+    is_active = models.BooleanField(default=True)
+
+    
+    def __str__(self):
+        return self.department_name
+
+class Designation(models.Model):
+    designation_name = models.CharField(max_length=255)
+    client_id = models.ForeignKey('core.Client',on_delete=models.CASCADE,default='No ID')
+    #client_id =  models.ForeignKey(User,null = True,on_delete= models.SET_NULL,blank=True)
+    created_by = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_by = models.CharField(max_length=100,null=True,blank=True)
+    updated_at = models.DateTimeField(auto_now=True,null=True,blank=True)
+    is_active = models.BooleanField(default=True)
+
+
+    def __str__(self):
+        return self.designation_name
+
+class User(models.Model):
+    user_name = models.CharField(max_length=255)
+    created_by = models.CharField(max_length=100)
+    client_id =  models.ForeignKey('core.Client',on_delete=models.CASCADE,default='No ID')
+    #department_id = models.ForeignKey(Department,on_delete=models.CASCADE)
+    #designation_id = models.ForeignKey(Designation,on_delete=models.CASCADE)
+    department_id = models.ForeignKey('core.Department', on_delete=models.CASCADE,default='No ID')
+    designation_id = models.ForeignKey('core.Designation', on_delete=models.CASCADE,default='No ID')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_by = models.CharField(max_length=100,null=True,blank=True)
+    updated_at = models.DateTimeField(auto_now=True,null=True,blank=True)
+    #is_active = models.BooleanField(default=True)
+
+
+    def __str__(self):
+        return self.user_name
